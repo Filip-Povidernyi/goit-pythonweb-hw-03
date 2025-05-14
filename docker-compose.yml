@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./home_work/src:/app/home_work/src
+      - data_storage:/app/home_work/src/storage
+    restart: 
+      unless-stopped
+
+volumes:
+  data_storage:
+    driver: local
+  
