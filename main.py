@@ -17,12 +17,7 @@ class HttpHandler(BaseHTTPRequestHandler):
         elif url_pr.path == '/read':
             json_path = pathlib.Path('./home_work/src/storage/data.json')
             data = self.get_data(json_path)
-            if data:
-
-                self.render_data([value for value in data.values()])
-                # self.send_html_file('./home_work/src/new_read.html')
-            else:
-                self.send_html_file('./home_work/src/error.html', 404)
+            self.render_data([value for value in data.values()])
         else:
             static_path = pathlib.Path(
                 './home_work/src').joinpath(url_pr.path.lstrip('/'))
@@ -33,17 +28,13 @@ class HttpHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         data = self.rfile.read(int(self.headers['Content-Length']))
-        print(data)
         data_parse = urllib.parse.unquote_plus(data.decode())
-        print(data_parse)
         dt = datetime.now()
         data_dict = {key: value for key, value in [
             el.split('=') for el in data_parse.split('&')]}
-        print(data_dict)
         json_path = pathlib.Path('./home_work/src/storage/data.json')
         data = self.get_data(json_path)
         data[dt.strftime('%Y-%m-%d %H:%M:%S')] = data_dict
-        print(data)
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
